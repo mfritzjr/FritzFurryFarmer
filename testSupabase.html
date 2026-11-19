@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Supabase Connection Test</title>
+</head>
+<body>
+    <h1>Supabase Test</h1>
+    <pre id="result">Connecting...</pre>
+
+    <script type="module">
+        import { supabase } from './src/supabaseClient.js';
+
+        async function testConnection() {
+            const result = document.getElementById('result');
+
+            const { data, error } = await supabase
+                .from('leaderboard')
+                .select('*');
+
+            if (error) {
+                console.error('Supabase Error:', error);
+
+                result.textContent =
+                    'ERROR: ' + JSON.stringify(error, null, 2);
+            } else {
+                console.log('Supabase Data:', data);
+
+                result.textContent =
+                    JSON.stringify(data, null, 2);
+            }
+        }
+
+        testConnection();
+    </script>
+</body>
+</html>

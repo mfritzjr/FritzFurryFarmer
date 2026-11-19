@@ -1,0 +1,693 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        /* development.css */
+
+        :root {
+            --cream: #fff9e9;
+            --green: #365d40;
+            --light-green: #e5eedb;
+            --brown: #72533b;
+            --text: #37352e;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: var(--cream);
+            color: var(--text);
+            font-family: 'Trebuchet MS', sans-serif;
+            line-height: 1.8;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            padding: 20px;
+            background: var(--green);
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .navbar a:hover {
+            color: #f9dc8e;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 85px 20px 65px;
+            background: var(--light-green);
+        }
+
+        .hero h1 {
+            font-size: clamp(2.2rem, 5vw, 4rem);
+            color: var(--green);
+            line-height: 1.2;
+            margin: 10px 0 20px;
+        }
+
+        .hero > p:not(.eyebrow) {
+            max-width: 650px;
+            margin: 0 auto 35px;
+        }
+
+        .eyebrow,
+        .chapter {
+            color: #7b8e46;
+            font-weight: bold;
+            letter-spacing: 3px;
+            font-size: 0.8rem;
+        }
+
+        .hero-image {
+            display: block;
+            width: min(100%, 800px);
+            max-height: 400px;
+            object-fit: contain;
+            margin: 0 auto;
+            image-rendering: pixelated;
+        }
+
+        main {
+            max-width: 1150px;
+            margin: auto;
+            padding: 30px 24px;
+        }
+
+        /* Alternating image and text */
+
+        .story-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            gap: 65px;
+            padding: 85px 0;
+            border-bottom: 1px solid #e2ddca;
+        }
+
+        .story-section.reverse .story-image {
+            order: 2;
+        }
+
+        .story-section h2,
+        .gallery-section h2,
+        .writing-section h2 {
+            font-size: clamp(1.7rem, 3vw, 2.5rem);
+            color: var(--green);
+            line-height: 1.3;
+            margin: 12px 0 24px;
+            border-bottom: 1px solid #e2ddca;
+        }
+        .story-text p {
+            margin-bottom: 18px;
+        }
+
+        .story-image {
+            background: var(--light-green);
+            border: 3px solid #c7d9b8;
+            border-radius: 20px;
+            padding: 28px;
+            text-align: center;
+        }
+
+        .background-image {
+            background: var(--light-green);
+            border: 3px solid #c7d9b8;
+            border-radius: 20px;
+            padding: 28px;
+            text-align: center;
+        }
+
+        .background-image img {
+            display: block;
+            width: 100%;
+            max-height: 800px;
+            object-fit: contain;
+            image-rendering: pixelated;
+        }
+
+        .story-image img {
+            display: block;
+            width: 100%;
+            max-height: 350px;
+            object-fit: contain;
+            image-rendering: pixelated;
+        }
+
+        .caption {
+            font-size: 0.85rem;
+            color: var(--brown);
+            margin: 15px 0 0;
+            font-style: italic;
+        }
+        /* PDF Viewer */
+
+        .pdf-section {
+            text-align: center;
+            padding: 80px 20px;
+            
+            border-bottom: 1px solid #e2ddca;
+        }
+
+        .pdf-section h2 {
+            color: var(--green);
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .pdf-viewer {
+            max-width: 850px;
+            margin: 35px auto;
+            padding: 20px;
+            background: #e5eedb;
+            border: 3px solid #c7d9b8;
+            border-radius: 18px;
+        }
+
+        #pdf-canvas {
+            display: block;
+            max-width: 100%;
+            height: auto;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.12);
+        }
+
+        .pdf-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 25px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            color: var(--green);
+            font-weight: bold;
+        }
+
+        .pdf-controls button {
+            background: var(--green);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 22px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .pdf-controls button:hover:not(:disabled) {
+            background: #527e58;
+        }
+
+        .pdf-controls button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        /* Parent container to hold the sprites */
+        .sprite-container {
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            gap: 0px;
+            margin: -20px;
+        }
+
+        .sprite-container figure {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: nowrap;
+            gap: 10px;
+            margin: 0;
+        }
+
+        /* Base rules for every sprite frame */
+        .sprite1 {
+            width: 271.5px;
+            height: 724px;
+            background-image: url('./assets/images/farmer1_D.png');
+            background-repeat: no-repeat;
+            animation: play 2s steps(8) infinite;
+            image-rendering: pixelated;
+        }
+        .sprite2 {
+            width: 271.5px;
+            height: 724px;
+            background-image: url('./assets/images/farmer2_D.png');
+            background-repeat: no-repeat;
+            animation: play 2s steps(8) infinite;
+            image-rendering: pixelated;
+        }
+        .sprite3 {
+            width: 271.5px;
+            height: 724px;
+            background-image: url('./assets/images/farmer3_D.png');
+            background-repeat: no-repeat;
+            animation: play 2s steps(8) infinite;
+            image-rendering: pixelated;
+        }
+        .sprite4 {
+            width: 271.5px;
+            height: 724px;
+            background-image: url('./assets/images/farmer4_D.png');
+            background-repeat: no-repeat;
+            animation: play 2s steps(8) infinite;
+            image-rendering: pixelated;
+        }
+        .sprite5 {
+            width: 271.5px;
+            height: 724px;
+            background-image: url('./assets/images/farmer5_D.png');
+            background-repeat: no-repeat;
+            animation: play 2s steps(8) infinite;
+            image-rendering: pixelated;
+        }
+
+        .sprite1, .sprite2, .sprite3, .sprite4, .sprite5 {
+            position: relative;
+            flex-shrink: 0;
+            image-rendering: pixelated;
+        }
+
+        .sprite-container figcaption {
+            flex-basis: 100%;
+            text-align: center;
+            margin-top: 30px;
+            font-weight: bold;
+            color: #365d40;
+            margin-bottom: 20px;
+        }
+
+        @keyframes play {
+            from {
+                background-position: 0px 0px;
+            }
+
+            to {
+                background-position: -2172px 0px;
+            }
+        }
+
+        .imageset-container {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            margin: 10px;
+        }
+
+        .imageset-container figure {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: nowrap;
+            gap: 10px;
+            margin: 0;
+        }
+
+        .imageset-container img {
+            width: 200px;
+            height: 200px;
+            object-fit: contain;
+            image-rendering: pixelated;
+        }
+
+        .imageset-container figcaption {
+            flex-basis: 100%;
+            text-align: center;
+            margin-top: 10px;
+            font-weight: bold;
+            color: #365d40;
+        }
+
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Development | Fritz' Furry Farmer</title>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <a href="index.html">Play Game</a>
+        <a href="leaderboard.html">Leaderboard</a>
+        <a href="development.html">Development</a>
+        <a href="essay.html">Essay</a>
+    </nav>
+
+    <header class="hero">
+        <p class="eyebrow">BEHIND THE SCENES</p>
+        <h1>Growing Fritz Furry Farmer</h1>
+        <p>
+            From a few written design concepts,
+            and my creation of the gameplay loop,
+            images and designs generated by genAI
+            (namely chatGpt with small inlcusions of copilot).
+            Here's how Fritz' Furry Farmer came to life!  - Made by Mark Fritz
+        </p>
+
+        <img src="./assets/images/farmer_logo.png"
+             alt="Fritz' Furry Farmer title artwork"
+             class="hero-image">
+    </header>
+
+    <main>
+        <section class="pdf-section">
+            <span class="chapter">Chapter 01</span>
+            <h2>My document of development process</h2>
+        
+            <p>
+                Explore the complete development process of Fritz Furry Farmer!
+                I thought over these processes for several days after deciding
+                to start development in Phaser 4. I wrote my initial concepts 
+                some of which came true t life and other of which had to be 
+                changed due to game Engine constraints. Between the concepts,
+                doing research, writing the code, and doing asset generation,
+                easily 150+ hours!
+            </p>
+        
+            <div class="pdf-viewer">
+                <canvas id="pdf-canvas"></canvas>
+        
+                <div class="pdf-controls">
+                    <button id="prev-page">← Previous</button>
+        
+                    <span>
+                        Page <span id="page-num">1</span>
+                        of <span id="page-count">--</span>
+                    </span>
+        
+                    <button id="next-page">Next →</button>
+                </div>
+            </div>
+        </section>
+
+
+        <section class="story-section">
+            <div class="background-image">
+                <img src="./assets/images/background_1.png"
+                     alt="Final Background Art">
+                <p class="caption">Early design Notes</p>
+            </div>
+
+            <div class="story-text">
+                <span class="chapter">CHAPTER 02</span>
+                <h2>Creating the Background Concept</h2>
+
+                <p>
+                    When I was young my grandfather was a farmer and
+                    when he retired I lovingly nicknamed  his backyard Fritzy's Farm, 
+                    me and my father often helped him maintain this plot. I wanted
+                    to include something in the game title and original background that
+                    referenced mine and my family's name, and this is what I settled upon.
+                </p>
+
+                <p>
+                    I originally started out with the generation of the background with copilot
+                    and it generated several concept images that I slowly refined until I had
+                    most of the background modeled. But at this moment I realized I would need
+                    a better editing manager which I found in the pen tool on chatGpt at which point
+                    I subscribed to chatGpt Plus to have unlimited query generations and so I stuck
+                    with that for the remainder of the project.
+                </p>
+            </div>
+        </section>
+
+        <section class="story-section reverse">
+            <div class="story-image">
+                <img src="./assets/images/plant.png"
+                     alt="Plant growth spritesheet">
+                <p class="caption">Plant growth animation</p>
+            </div>
+
+            <div class="story-text">
+                <span class="chapter">CHAPTER 03</span>
+                <h2>Bringing the Farm to Life</h2>
+
+                <p>
+                    Since the setting was a farm, and the main character a farmer,
+                    I wanted to have a part of the game being growing the catnip Plant
+                    as can be seen to the right. Obviously the other implements are an
+                    extension of the horde survival genre with games critically acclaimed
+                    like Vampire Survivors,Megabonk, and Brotato. But I wanted to use the
+                    farming element as a twist which is why the bullets both deal damage
+                    and grow the plant in individual stages.
+                </p>
+
+                <p>
+                    As you can see in my notes prior to the project(above ^) I wanted
+                    the five stages of growth since that was stepwise and not too slow to become
+                    annoying and the mechanics involved largely work. I especially like that during
+                    the generation process to create this spritesheet properly. I engineered the
+                    results until we has 4 slowly blooming frames and then the final glow frame has
+                    cat ears and the flowers look like little paw prints.
+                </p>
+            </div>
+        </section>
+
+
+        <section class="gallery-section">
+            <span class="chapter">THE ARTWORK</span>
+            <h2>From Ideas to Pixel Art</h2>
+
+            <p class="section-intro">
+                A collection of the assets created throughout development. They took anywhere
+                from 2 mins, if no changes needed, to almost an hour, if many revisions required
+                and random outliers occur for each image, sprite, or sound effect. However, even
+                given these time investments the results were largely better than I could produce
+                any amount of time at my artistic skill level and lack of creativity. It also helped
+                choose many of the elements of this website: colors, blocking, font and layout.
+            </p>
+            <figure>
+                <div class="sprite-container">
+                    <div
+                        class="sprite1"
+                        role="img"
+                        aria-label="Farmer1 Walking">
+                    </div>
+                    <div
+                        class="sprite2"
+                        role="img"
+                        aria-label="Farmer1 Walking">
+                    </div>
+                    <div
+                        class="sprite3"
+                        role="img"
+                        aria-label="Farmer1 Walking">
+                    </div>
+                    <div
+                        class="sprite4"
+                        role="img"
+                        aria-label="Farmer1 Walking">
+                    </div>
+                    <div
+                        class="sprite5"
+                        role="img"
+                        aria-label="Farmer1 Walking">
+                    </div>
+                    <figcaption>Character Walking Down Animation for Each Evolution</figcaption>
+                    
+                </div>
+            </figure>    
+                <div class="imageset-container">
+                    <figure>
+                        <img src="./assets/images/blue_gem.png"
+                            alt="Blue Gem Sprite">
+                        <img src="./assets/images/green_gem.png"
+                            alt="Green Gem">
+                        <img src="./assets/images/fish.png"
+                            alt="Fish">
+                        <img src="./assets/images/red_gem.png"
+                            alt="Red Gem">
+                        <img src="./assets/images/purple_gem.png"
+                            alt="Purple Gem">
+                        <img src="./assets/images/catnip.png"
+                            alt="Catnip">
+                        <figcaption>Collectible Pickups</figcaption>
+                    </figure>
+                </div>
+
+                <div class="imageset-container">
+                    <figure>
+                        <img src="./assets/images/zombie_cat_L.png"
+                            alt="Zombie Cat Sprite">
+                        <img src="./assets/images/mouse_L.png"
+                            alt="Mouse Sprite">
+                        <img src="./assets/images/dog_L.png"
+                            alt="Dog Sprite">
+                        <figcaption>Enemies</figcaption>
+                        <section class="story-section"></section>
+                    </figure>
+                </div>
+        </section>
+        <section class="story-section"></section>
+        <section class="writing-section">
+            <span class="chapter">CHAPTER 04</span>
+            <h2>Programming the Game</h2>
+
+            <p>
+                Learned a lot of basic uses of Phaser 4 from tutorials namely from https://www.youtube.com/@swestover and https://www.youtube.com/@ourcadetv,
+                and using the API documentation from Phaser themselves available at https://docs.phaser.io/api-documentation/api-documentation,
+                and for the connection to database and separate html files used many different resources. Each bit of learning came with some testing,
+                eventually I got to the point where it was the best I could do.
+            </p>
+
+            <p>
+                The crux of the Game, Fritz' Furry Farmer, that I made, is trying to get the highest possible score you can and survive the entire
+                2 mins and 30 secs and a small overtime to pick up the remaining gems to add to your score. You take damage based on the type of enemy
+                they are: zombie cats are slower but deal 2 damage and have lower drop odds for high score gems and healing items(fish), mice are faster but 
+                but have less health and deal less damage to balance it out, the dog enemy does the most damage 3 hearts, has the median speed, and  is more likely
+                to drop higher scoring gems. These are also repeated in the much larger versions that I have denoted as bosses, appearing every roughly 30 seconds they
+                have way more health and size but speed and damage proportional to their regular counterparts. The most interesting part to the game are the regular level
+                up(from collecting gems) and special levelups from harvesting the Catnip fruit, which gives you much better abilities and evolves your character. The
+                hardest part to implement but also the most basic element of most Horde Survivors is the ability to fire your projectiles automatically, currently and in the most
+                difficult way possible I made it constantly cycle to look for the nearest enemy or plant(with a slight buffer) and aim the next Projectile at it. I wanted it to
+                work like this so that it would be as simple and user friendly as possible. I became aware of a much easier method using collisions and creating a maximum shot radius
+                but I decided to keep my original method as it would be simpler for anyone unfamiliar with this type of game. The other collision methods that I do use are
+                ones inherently able by being added to the arcade physics pre built in phaser 4. With this I could tell when bullets hit enemies or plants and had to make sure it only 
+                counted each instance of collsion with an object once. I made each item pickup a collsion resolution and then would essentially deactivate the pickup. Most of the
+                logic in the game was mapped similarly and had relevant function calls and variable values saved. The culmination of these is the game as you see can see it in the game
+                tab! Among all the html, and js files I have easily more than 2500 lines of written code!
+            </p>
+        </section>
+
+        <section class="writing-section">
+            <span class="chapter">FINAL THOUGHTS</span>
+            <h2>What I Learned and where it is going</h2>
+
+            <p>
+                Altogether, though stressful because this project is for an assignment, I genuinely enjoyed tinkering
+                with the code. Getting to see a fully formed game come to fruition from what was originally just a small
+                idea is really cool. It gives me even more admiration for game and other software developers, seeing as
+                they spend even more time and effort polishing their projects to have people use/enjoy their work. I set
+                out in this project to make a game demo and learn some new coding skills and gain experience using genAI as
+                that is becoming an increasingly bigger part of both game development and daily life. I have many good things
+                to say about it as I alluded to before, it makes much higher quality output than I could have imagined or
+                created myself given an infinite amount of time, it takes a lot of attempts to get something exctly as you envision
+                it, but especially with the editing tools provided within chatGPT I gradually was able to lower the time needed for
+                each individual task and it would even prompt options that I had not yet considered such as improvisations in some of
+                the gem design and what the particulars of each character evolution included. I believe I have met the goals I set for
+                myself for this project. What will this lead to for me in the future, I think potentially a hobby of making games, at the
+                very least a brand new tool in my toolbag, knowing how to query genAI to help me in my future in technology, hopefully an IT
+                or software development position. At the end of it all,
+             </p>
+             <p style="text-align: center;">Thank you so much for playing my game! - Mark Fritz</p>
+        </section>
+       
+        
+        <script type="module">
+            import * as pdfjsLib from
+                'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.mjs';
+        
+            pdfjsLib.GlobalWorkerOptions.workerSrc =
+                'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs';
+        
+            const pdfPath = './assets/images/Development.pdf';
+        
+            let pdfDoc = null;
+            let pageNum = 1;
+            let pageRendering = false;
+            let pendingPage = null;
+        
+            const canvas = document.getElementById('pdf-canvas');
+            const ctx = canvas.getContext('2d');
+        
+            const prevButton = document.getElementById('prev-page');
+            const nextButton = document.getElementById('next-page');
+        
+            async function renderPage(num) {
+                pageRendering = true;
+        
+                try {
+                    const page = await pdfDoc.getPage(num);
+        
+                    const baseViewport = page.getViewport({ scale: 1 });
+                    const containerWidth =
+                        canvas.parentElement.clientWidth - 40;
+        
+                    const scale = Math.min(
+                        1.5,
+                        containerWidth / baseViewport.width
+                    );
+        
+                    const viewport = page.getViewport({ scale });
+        
+                    canvas.width = Math.floor(viewport.width);
+                    canvas.height = Math.floor(viewport.height);
+        
+                    await page.render({
+                        canvasContext: ctx,
+                        viewport: viewport
+                    }).promise;
+        
+                    document.getElementById('page-num').textContent = num;
+        
+                    prevButton.disabled = num <= 1;
+                    nextButton.disabled = num >= pdfDoc.numPages;
+                } catch (error) {
+                    console.error('Error rendering PDF page:', error);
+                } finally {
+                    pageRendering = false;
+        
+                    if (pendingPage !== null) {
+                        const next = pendingPage;
+                        pendingPage = null;
+                        renderPage(next);
+                    }
+                }
+            }
+        
+            function queueRenderPage(num) {
+                if (pageRendering) {
+                    pendingPage = num;
+                } else {
+                    renderPage(num);
+                }
+            }
+        
+            prevButton.addEventListener('click', () => {
+                if (pageNum <= 1) return;
+                pageNum--;
+                queueRenderPage(pageNum);
+            });
+        
+            nextButton.addEventListener('click', () => {
+                if (!pdfDoc || pageNum >= pdfDoc.numPages) return;
+                pageNum++;
+                queueRenderPage(pageNum);
+            });
+        
+            try {
+                pdfDoc = await pdfjsLib.getDocument(pdfPath).promise;
+        
+                document.getElementById('page-count').textContent =
+                    pdfDoc.numPages;
+        
+                renderPage(pageNum);
+            } catch (error) {
+                console.error('Could not load PDF:', error);
+            }
+        </script>
+    </main>
+
+    <footer>
+        <p>Fritz Furry Farmer — Development Journey</p>
+    </footer>
+
+</body>
+</html>

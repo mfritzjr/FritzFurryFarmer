@@ -1,0 +1,42 @@
+import Phaser from './lib/phaser.js';
+import { SCENE_KEYS } from './common/scene-keys.js';
+import { GameScene } from './scenes/game-scene.js';
+import { PreloadScene } from './scenes/preload-scene.js';
+import { UpgradeScene } from './scenes/upgrade-scene.js';
+import { SpecialScene } from './scenes/special-scene.js';
+import { GameOverScene } from './scenes/game-over-scene.js';
+import { TitleScene } from './scenes/title-scene.js';
+import { GameEndScene } from './scenes/game-end-scene.js';
+
+//* @type {Phaser.Types.Core.GameConfig} */
+const gameConfig = {
+    type: Phaser.CANVAS,
+    pixelArt: true,
+    roundPixels: true,
+    scale: {
+        parent:'game-container',
+        width:1080,
+        height: 720,
+        autoCenter: Phaser.Scale.CENTER_BOTH,
+        mode: Phaser.Scale.FIT,
+    },
+    backgroundColor: '#000000',
+    physics: {
+        default: 'arcade',
+        arcade: {
+            gravity: {y:0, x: 0},
+            debug: false
+        },
+    },
+};
+
+const game =  new Phaser.Game(gameConfig);
+
+game.scene.add(SCENE_KEYS.PRELOAD_SCENE,PreloadScene);
+game.scene.add(SCENE_KEYS.GAME_SCENE, GameScene);
+game.scene.add(SCENE_KEYS.UPGRADE_SCENE, UpgradeScene);
+game.scene.add(SCENE_KEYS.SPECIAL_SCENE, SpecialScene);
+game.scene.add(SCENE_KEYS.GAME_OVER_SCENE, GameOverScene);
+game.scene.add(SCENE_KEYS.GAME_END_SCENE, GameEndScene);
+game.scene.add(SCENE_KEYS.TITLE_SCENE, TitleScene);
+game.scene.start(SCENE_KEYS.PRELOAD_SCENE);
