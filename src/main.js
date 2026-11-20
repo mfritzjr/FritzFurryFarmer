@@ -7,6 +7,7 @@ import { SpecialScene } from './scenes/special-scene.js';
 import { GameOverScene } from './scenes/game-over-scene.js';
 import { TitleScene } from './scenes/title-scene.js';
 import { GameEndScene } from './scenes/game-end-scene.js';
+import { InstructionScene } from './scenes/instruction-scene.js';
 
 //* @type {Phaser.Types.Core.GameConfig} */
 const gameConfig = {
@@ -39,4 +40,5 @@ game.scene.add(SCENE_KEYS.SPECIAL_SCENE, SpecialScene);
 game.scene.add(SCENE_KEYS.GAME_OVER_SCENE, GameOverScene);
 game.scene.add(SCENE_KEYS.GAME_END_SCENE, GameEndScene);
 game.scene.add(SCENE_KEYS.TITLE_SCENE, TitleScene);
+game.scene.add(SCENE_KEYS.INSTRUCTION_SCENE, InstructionScene);
 game.scene.start(SCENE_KEYS.PRELOAD_SCENE);

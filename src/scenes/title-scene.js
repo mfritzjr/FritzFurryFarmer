@@ -20,11 +20,19 @@ export class TitleScene extends Phaser.Scene {
             .setAlpha(0.8);
 
         
-        this.add.text(this.scale.width/2, 500, 'Click to play!', {
-            fontSize: '22px',
-        }).setOrigin(0.5).setDepth(1000);
+        const start_button = this.add.image(this.scale.width/2,550, ASSET_KEYS.START_BUTTON, 0).setScale(0.1).setAlpha(0.8).setDepth(2000);
+        const info_button = this.add.image(1000,50, ASSET_KEYS.INFO_BUTTON, 0).setScale(0.1).setAlpha(0.8).setDepth(2000);
+        start_button.setInteractive();
+        info_button.setInteractive();
 
-        this.input.once(Phaser.Input.Events.POINTER_DOWN, () => {
+        info_button.on('pointerdown', () => {
+                    this.cameras.main.fadeOut(500);
+                    this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
+                        this.scene.start(SCENE_KEYS.INSTRUCTION_SCENE);
+                    });
+                });
+
+        start_button.on('pointerdown', () => {
             this.cameras.main.fadeOut(500);
             this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
                 this.scene.start(SCENE_KEYS.GAME_SCENE);

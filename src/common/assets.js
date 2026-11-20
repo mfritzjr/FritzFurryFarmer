@@ -35,6 +35,10 @@ export const ASSET_KEYS = Object.freeze({
     DOG_L: 'DOG_L',
     DOG_R: 'DOG_R',
     FARMER_LOGO: 'FARMER_LOGO',
+    INSTRUCTIONS: 'INSTRUCTIONS',
+    X_BUTTON : 'X_BUTTON',
+    INFO_BUTTON : 'INFO_BUTTON',
+    START_BUTTON : 'START_BUTTON',
     BACKGROUND_MUSIC: 'BACKGROUND_MUSIC',
     FX_HIT: 'FX_HIT',
     FX_GEM: 'FX_GEM',
@@ -278,6 +282,22 @@ export const IMAGE_ASSETS = [
     {
         assetKey: ASSET_KEYS.FARMER_LOGO,
         path: 'assets/images/farmer_logo.png',
+    },
+    {
+        assetKey: ASSET_KEYS.INSTRUCTIONS,
+        path: 'assets/images/instructions.png',
+    },
+    {
+        assetKey: ASSET_KEYS.X_BUTTON,
+        path: 'assets/images/x_button.png',
+    },
+    {
+        assetKey: ASSET_KEYS.INFO_BUTTON,
+        path: 'assets/images/info_button.png',
+    },
+    {
+        assetKey: ASSET_KEYS.START_BUTTON,
+        path: 'assets/images/start_button.png',
     },
 ];
 

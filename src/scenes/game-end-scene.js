@@ -29,40 +29,60 @@ export class GameEndScene extends Phaser.Scene {
 
     create(){
         this.cameras.main.setBackgroundColor('#000000');
-        
         this.playerName = '';
-
+        this.submittedName = '';
+        this.checkLeaderboard = '';
+        
         this.nameText = this.add.text(
-            this.scale.width / 2,
+        this.scale.width / 2,
             550,
             'Enter Name: ',
             {
                 fontSize: '32px',
                 color: '#ffffff'
             }
-        ).setOrigin(0.5);
-
+            ).setOrigin(0.5);
+        
         this.input.keyboard.on('keydown', async(event) => {
-    
+            
             if (event.key === 'Backspace') {
                 this.playerName = this.playerName.slice(0, -1);
-            }
-            else if (event.key === 'Enter') {
+            } else if (event.key === 'Enter') {
                 if (this.playerName.trim().length === 0) return;
                 console.log('Player entered:', this.playerName);
                 const saved = await saveScore(
                     this.playerName,
                     this.#score
-                );
-
+                 );
+        
                 if(saved){
+                    this.submittedName = this.playerName;
+                    this.playerName = '';
+                    this.nameText.setText('Enter Name: ' + this.playerName);
+                    this.checkLeaderboard = this.add.text(
+                        this.nameText.x,
+                        this.nameText.y + this.nameText.displayHeight + 10,
+                        `${this.submittedName} & score:${this.#score} submitted to leaderboard!`,
+                        {
+                            fontSize: '22px',
+                            color: '#ffffff'
+                        }
+                    ).setOrigin(0.5);
+                    this.add.text(
+                        this.checkLeaderboard.x,
+                        this.checkLeaderboard.y + this.checkLeaderboard.displayHeight + 10,
+                        `Check the leaderboard tab to see if you cracked the top 10!`,
+                        {
+                            fontSize: '22px',
+                            color: '#ffffff'
+                        }
+                    ).setOrigin(0.5);
                     console.log('Leaderboard updated!');
                 }
+            } else if (event.key.length === 1) {
+                        this.playerName += event.key;
             }
-            else if (event.key.length === 1) {
-                this.playerName += event.key;
-            }
-    
+            
             this.nameText.setText('Enter Name: ' + this.playerName);
         });
     

@@ -29,6 +29,8 @@ export class GameOverScene extends Phaser.Scene {
     create(){
         this.cameras.main.setBackgroundColor('#000000');
         this.playerName = '';
+        this.submittedName = '';
+        this.checkLeaderboard = '';
         
         this.nameText = this.add.text(
         this.scale.width / 2,
@@ -53,6 +55,27 @@ export class GameOverScene extends Phaser.Scene {
                  );
         
                 if(saved){
+                    this.submittedName = this.playerName;
+                    this.playerName = '';
+                    this.nameText.setText('Enter Name: ' + this.playerName);
+                    this.checkLeaderboard = this.add.text(
+                        this.nameText.x,
+                        this.nameText.y + this.nameText.displayHeight + 10,
+                        `${this.submittedName} & score:${this.#score} submitted to leaderboard!`,
+                        {
+                            fontSize: '22px',
+                            color: '#ffffff'
+                        }
+                    ).setOrigin(0.5);
+                    this.add.text(
+                        this.checkLeaderboard.x,
+                        this.checkLeaderboard.y + this.checkLeaderboard.displayHeight + 10,
+                        `Check the leaderboard tab to see if you cracked the top 10!`,
+                        {
+                            fontSize: '22px',
+                            color: '#ffffff'
+                        }
+                    ).setOrigin(0.5);
                     console.log('Leaderboard updated!');
                 }
             } else if (event.key.length === 1) {
@@ -69,14 +92,14 @@ export class GameOverScene extends Phaser.Scene {
         this.add.text(3*this.scale.width/4-50, 200, `Score: ${this.#score}`, textConfig
         ).setOrigin(0.5).setDepth(1000);
         const button1 = this.add.text(
-            3*this.scale.width/4 - 250, 350,
+            3*this.scale.width/4 - 250, 300,
             'Click here to play again!',
             { fontSize: '28px', color: '#ffffff' }
         );
         button1.setInteractive();
         const button2 = this.add.text(
-            3*this.scale.width/4 - 300, 450,
-            'Click here to the title sceen!',
+            3*this.scale.width/4 - 300, 400,
+            'Click here for the title screen!',
             { fontSize: '28px', color: '#ffffff' }
         );
         button2.setInteractive();
